@@ -32,12 +32,24 @@ This is the recommended, reproducible way to build and run the fuzzers:
 docker build -f Dockerfile.fuzz -t tmux-fuzzer-advanced .
 ```
 
+For arm:
+```sh
+docker buildx build --platform linux/amd64 -f Dockerfile.fuzz -t tmux-fuzzer-advanced .
+```
+
 2. Run a container, mount a local `fuzz_output` directory and start an interactive shell inside the container:
 
 ```sh
 mkdir -p fuzz_output
 docker run -it --rm -v $(pwd)/fuzz_output:/tmux/fuzz_output tmux-fuzzer-advanced /bin/bash
 ```
+
+For arm:
+```sh
+mkdir -p fuzz_output
+docker run --platform linux/amd64 -it --rm -v $(pwd)/fuzz_output:/tmux/fuzz_output tmux-fuzzer-advanced /bin/bash
+```
+
 
 3. Inside the container, build and run the fuzzers:
 
