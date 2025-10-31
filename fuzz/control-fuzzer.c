@@ -1,7 +1,3 @@
-/*
- * Fuzzer for tmux control mode
- * Targets: control.c and control protocol parsing
- */
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -35,7 +31,7 @@ int LLVMFuzzerInitialize(__unused int *argc, __unused char ***argv)
     libevent = osdep_event_init();
     socket_path = xstrdup("dummy");
     
-    // Create control mode client
+
     c = xcalloc(1, sizeof *c);
     c->flags = CLIENT_CONTROL;
     c->peer = NULL;
@@ -50,17 +46,17 @@ int LLVMFuzzerTestOneInput(const u_char *data, size_t size)
     if (size == 0 || size > FUZZER_MAXLEN)
         return 0;
     
-    // Create buffer with fuzzing data
+
     evb = evbuffer_new();
     if (evb == NULL)
         return 0;
     
     evbuffer_add(evb, data, size);
     
-    // Process control mode input
+
     control_write(c, "%.*s", (int)size, data);
     
-    // Drain any output
+
     while (cmdq_next(c) != 0)
         ;
     

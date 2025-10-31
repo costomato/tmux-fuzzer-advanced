@@ -1,7 +1,3 @@
-/*
- * FIXED Persistent mode fuzzer for tmux input parser
- */
-
 #include <stddef.h>
 #include <assert.h>
 #include <fcntl.h>
@@ -30,7 +26,7 @@ int main(int argc, char **argv)
     __AFL_INIT();
 #endif
 
-    // Initialize tmux globals
+
     global_environ = environ_create();
     global_options = options_create(NULL);
     global_s_options = options_create(NULL);
@@ -59,7 +55,7 @@ int main(int argc, char **argv)
         if (len > FUZZER_MAXLEN || len == 0)
             continue;
 
-        // Create fresh window and pane for each iteration
+
         w = window_create(PANE_WIDTH, PANE_HEIGHT, 0, 0);
         wp = window_add_pane(w, NULL, 0, 0);
         bufferevent_pair_new(libevent, BEV_OPT_CLOSE_ON_FREE, vpty);
@@ -71,17 +67,17 @@ int main(int argc, char **argv)
             continue;
         wp->event = bufferevent_new(wp->fd, NULL, NULL, NULL, NULL);
 
-        // Parse the input
+
         input_parse_buffer(wp, buf, len);
         
-        // Process commands
+
         while (cmdq_next(NULL) != 0)
             ;
         
-        // Run event loop
+
         error = event_base_loop(libevent, EVLOOP_NONBLOCK);
 
-        // Cleanup
+
         assert(w->references == 1);
         window_remove_ref(w, __func__);
         bufferevent_free(vpty[0]);
