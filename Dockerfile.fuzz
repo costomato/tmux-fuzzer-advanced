@@ -1,0 +1,20 @@
+FROM aflplusplus/aflplusplus:latest
+
+# Install dependencies for tmux
+RUN apt-get update && apt-get install -y \
+    libevent-dev \
+    libncurses-dev \
+    bison \
+    pkg-config \
+    autoconf \
+    automake \
+    libtool \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmux
+
+# Copy everything and build
+COPY . /tmux/
+
+# Run the fuzzing script
+CMD ["/bin/bash", "./fuzz.sh"]
